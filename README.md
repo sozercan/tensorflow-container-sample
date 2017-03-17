@@ -18,7 +18,10 @@ Then make a GET request to `localhost:<port>/predict` to get the prediction
 ### Model save/restore
 TF checkpoint files will be saved to an Azure storage account defined in `azure-blob-helper.py`.
 
-## Using Kubernetes on Azure Container Service (ACS)
+## Deploying using Kubernetes on Azure Container Service (ACS)
+
+### Getting Started
+See [Microsoft Azure Container Service Engine - Kubernetes Multi-GPU support Walkthrough](https://github.com/ritazh/acs-engine/blob/enable-k8v1.6-multiplegpu/docs/kubernetes.gpu.md) on how to set up (multi) GPU Kubernetes clusters in ACS
 
 Create a Standard storage account
 
@@ -26,7 +29,7 @@ Edit STORAGE_ACCOUNT_NAME and STORAGE_ACCOUNT_KEY for k8s/server.yaml and k8s/tr
 
 ### To train the model
 
-`kubectl create -f trainer-gpu.yaml --record`
+`kubectl create -f trainer-gpu.yaml`
 
 `export PODNAME=$(kubectl get pods -l app=tensorflow-server --kubeconfig=config.gpu -o jsonpath=tensorflow-server)`
 
@@ -40,7 +43,7 @@ Delete the trainer
 
 ### To serve predictions
 
-`kubectl create -f server-gpu.yaml --record`
+`kubectl create -f server-gpu.yaml`
 
 `kubectl get svc -l run=tensorflow-server`
 
