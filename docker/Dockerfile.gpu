@@ -7,10 +7,9 @@ RUN apt-get install -qq python-qt4
 RUN pip uninstall -y numpy
 RUN pip install --no-binary=:all: numpy
 
+RUN echo "LD_LIBRARY_PATH='/usr/lib/x86_64-linux-gnu_custom:$LD_LIBRARY_PATH'" >> ~/.profile
+RUN echo "LD_LIBRARY_PATH='/usr/lib/x86_64-linux-gnu_custom:$LD_LIBRARY_PATH'" >> ~/.bashrc
+
 COPY ./ /app
-ADD entry.sh /app/
-RUN chmod +x /app/entry.sh
 
 EXPOSE 80
-
-ENTRYPOINT ["/app/entry.sh"]

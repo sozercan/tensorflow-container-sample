@@ -8,9 +8,5 @@ RUN pip uninstall -y numpy
 RUN pip install --no-binary=:all: numpy
 
 COPY ./ /app
-ADD entry.sh /app/
-RUN chmod +x /app/entry.sh
 
 EXPOSE 80
-
-ENTRYPOINT ["/app/entry.sh"]

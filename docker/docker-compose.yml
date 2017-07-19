@@ -1,12 +1,12 @@
 version: '2'
 services:
   cpu:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
-    image: wbuchwalter/tensorflow-server-cpu
+    image: sozercan/tf-server
   gpu:
     build:
       context: .
       dockerfile: Dockerfile.gpu
-    image: wbuchwalter/tensorflow-server-gpu
+    image: sozercan/tf-server-gpu
