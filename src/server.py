@@ -12,6 +12,5 @@ class Server:
 
   def predict(self):
     x = np.random.rand(1,784)
-    prediction = self.model.predict(x)   
+    prediction = self.model.predict(x)
     return json.dumps(prediction.tolist(), separators=(',',':'))
-    

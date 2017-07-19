@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app: tensorflow-exporter
+  name: tensorflow-exporter
+spec:
+  template:
+    metadata:
+      name: tensorflow-exporter
+    spec:
+      volumes:
+      - name: libraries
+        hostPath:
+          path: /usr/lib/x86_64-linux-gnu
+      - name: azurefile
+        azureFile:
+            secretName: azure-secret
+            shareName: data
+            readOnly: false
+      containers:
+      - args:
+        command: ["/bin/sh", "-c"]
+        args: ["export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu_custom:$LD_LIBRARY_PATH; python /app/src/app.py --export"]
+        image: sozercan/tf-server-gpu:latest
+        name: tensorflow-exporter
+        resources:
+          limits:
+            alpha.kubernetes.io/nvidia-gpu: 1
+        volumeMounts:
+        - mountPath: /usr/lib/x86_64-linux-gnu_custom
+          name: libraries
+        - mountPath: "/data"
+          name: azurefile
+      restartPolicy: Never
