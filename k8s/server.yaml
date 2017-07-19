@@ -25,10 +25,12 @@ spec:
     spec:
       containers:
       - name: tensorflow-server
-        image: ritazh/tf-server
+        command: ["/bin/sh", "-c"]
+        args: ["python /app/src/app.py"]
+        image: sozercan/tf-server
         env:
         - name: STORAGE_ACCOUNT_NAME
-          value: 
+          value:
         - name: STORAGE_ACCOUNT_KEY
           value:
         ports:

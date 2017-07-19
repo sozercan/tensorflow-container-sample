@@ -11,12 +11,13 @@ spec:
     spec:
       containers:
       - args:
-        - --train
-        image: ritazh/tf-server
+        command: ["/bin/sh", "-c"]
+        args: [python /app/src/app.py --train"]
+        image: sozercan/tf-server
         name: tensorflow-trainer
         env:
         - name: STORAGE_ACCOUNT_NAME
-          value: 
+          value:
         - name: STORAGE_ACCOUNT_KEY
           value:
       restartPolicy: Never

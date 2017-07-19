@@ -10,28 +10,31 @@ spec:
       name: tensorflow-trainer
     spec:
       volumes:
-      - name: binaries
-        hostPath:
-          path: /usr/bin/
       - name: libraries
         hostPath:
           path: /usr/lib/x86_64-linux-gnu
+      - name: azurefile
+        azureFile:
+            secretName: azure-secret
+            shareName: data
+            readOnly: false
       containers:
       - args:
-        - --train
-        image: ritazh/tf-server-gpu
+        command: ["/bin/sh", "-c"]
+        args: ["export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu_custom:$LD_LIBRARY_PATH; python /app/src/app.py --train"]
+        image: sozercan/tf-server-gpu:latest
         name: tensorflow-trainer
         env:
         - name: STORAGE_ACCOUNT_NAME
-          value: 
+          value:
         - name: STORAGE_ACCOUNT_KEY
-          value: 
+          value:
         resources:
           limits:
-            alpha.kubernetes.io/nvidia-gpu: 2
+            alpha.kubernetes.io/nvidia-gpu: 1
         volumeMounts:
-        - mountPath: /usr/bin/
-          name: binaries
-        - mountPath: /usr/lib/x86_64-linux-gnu
+        - mountPath: /usr/lib/x86_64-linux-gnu_custom
           name: libraries
+        - mountPath: "/data"
+          name: azurefile
       restartPolicy: Never
