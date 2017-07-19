@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: tensorflow-server
+  name: tensorflow-server
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: tensorflow-server
+  type: LoadBalancer
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: tensorflow-server
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: tensorflow-server
+    spec:
+      volumes:
+      - name: libraries
+        hostPath:
+          path: /usr/lib/x86_64-linux-gnu
+      - name: azurefile
+        azureFile:
+            secretName: azure-secret
+            shareName: data
+            readOnly: false
+      containers:
+      - name: tensorflow-server
+        image: sozercan/tensorflow-serving-devel-gpu
+        command: ["/bin/sh", "-c"]
+        args: ["export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu_custom:$LD_LIBRARY_PATH; /usr/local/bin/tensorflow_model_server
+          --port=9000 --model_name=mnist --model_base_path=/data/mnist/checkpoints"]
+        ports:
+        - containerPort: 9000
+        resources:
+          limits:
+            alpha.kubernetes.io/nvidia-gpu: 1
+        volumeMounts:
+        - mountPath: /usr/lib/x86_64-linux-gnu_custom
+          name: libraries
+        - mountPath: "/data"
+          name: azurefile
